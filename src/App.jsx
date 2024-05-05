@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import SettingItem from "./components/SettingItem";
 import { FaRegCopy, FaSyncAlt } from "react-icons/fa";
 
@@ -10,6 +10,7 @@ function App() {
   const [symbolsAllowed, setSymbolsAllowed] = useState(false);
   const [rotation, setRotation] = useState(0);
 
+  const passwordInput = useRef(null);
   const generatePassword = useCallback(() => {
     setRotation((prev) => prev + 360);
 
@@ -29,9 +30,14 @@ function App() {
     generatePassword();
   }, [length, uppercaseAllowed, numbersAllowed, symbolsAllowed]);
 
+  const copyToClipboard = () => {
+    window.navigator.clipboard.writeText(password);
+    passwordInput.current.select();
+  };
+
   return (
-    <div className="bg-[#0e1430] w-full h-screen flex items-center justify-center">
-      <div className="main bg-[#1c2653] text-white py-5 px-7 rounded-lg w-[340px]">
+    <div className="bdg-[#0e1430] bg-gradient-to-tr from-[#44003b67] to-[#0d4c5c9d] backdrop-blur-md w-full h-screen flex items-center justify-center">
+      <div className="main bg-[#0e15339d] text-white py-5 px-7 rounded-xl w-[340px] border-white border-[1px]">
         <h1 className="text-2xl font-semibold mb-5 text-center">
           Auto Password Generator
         </h1>
@@ -39,17 +45,21 @@ function App() {
         <div className="password-area flex items-center gap-3 px-5 py-4 mb-2 bg-[#343f6e] rounded">
           <input
             type="text"
-            className="w-full bg-inherit outline-none font-semibold"
+            className="w-full bg-inherit outline-none font-semibold selection:bg-[#abe0ffe1] selection:text-[#000]"
             readOnly
             value={password}
             placeholder="Password"
+            ref={passwordInput}
           />
-          <FaRegCopy className="cursor-pointer text-xl" />
+          <FaRegCopy
+            className="cursor-pointer text-xl"
+            onClick={copyToClipboard}
+          />
         </div>
 
-        <div className="mini-heading font-medium  mx-2 my-1">
+        <div className="mini-heading font-medium  mx-2 my-1 ">
           <span className="opacity-80 text-[11px]">Length: </span>
-          <span className="opacity-100 text-[13px]">{length}</span>
+          <span className="opacity-100">{length}</span>
         </div>
         <div className="length-area flex items-center justify-between gap-3 p-3 y-4 mb-2 bg-[#343f6e] rounded font-medium">
           <span>4</span>
@@ -94,12 +104,12 @@ function App() {
         />
 
         <div
-          className="generate-new flex items-center justify-center gap-3 p-3 y-4 mt-5 mb-1 bg-gradient-to-r from-[#556eda] to-[#b319e2] rounded font-medium text-lg"
+          className="generate-new flex items-center justify-center gap-3 p-3 y-4 mt-5 mb-1 bg-gradient-to-r from-[#556eda] to-[#b319e2] rounded font-medium text-lg cursor-pointer"
           onClick={generatePassword}
         >
           <span>Re-generate</span>
           <FaSyncAlt
-            className="transition-all duration-700"
+            className="transition-all duration-500 ease-linear"
             style={{ rotate: rotation + "deg" }}
           />
         </div>
